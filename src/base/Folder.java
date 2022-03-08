@@ -1,8 +1,10 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Folder {
+public class Folder implements Comparable<Folder> {
 
 	private ArrayList<Note> notes;
 	private String name;
@@ -28,6 +30,55 @@ public class Folder {
 		return notes;
 	}
 
+	public void sortNotes()
+	{
+		Collections.sort(notes);
+	}
+	
+	public List<Note> searchNotes(String keywords)
+	{
+		keywords = keywords.toLowerCase();
+		keywords = keywords.replace(" or ", "||");
+		String list[] = keywords.split(" ");
+		
+		if (list.length == 0)
+			return new ArrayList<Note>();
+		
+		ArrayList<Note> result = new ArrayList<Note>();
+		ArrayList<Note> prevResult = notes;
+		
+		for (int i = 0; i < list.length; i++)
+		{
+			result = new ArrayList<Note>();
+			
+			if (!list[i].contains("||"))
+			{
+				for (Note note : prevResult)
+					if (note.containKeyword(list[i]))
+						result.add(note);
+			}
+			else
+			{
+				String orList[] = list[i].split("\\|\\|");
+
+				for (Note note : prevResult)
+					for (int j = 0; j < orList.length; j++)
+					{
+						if (note.containKeyword(orList[j]))
+						{
+							result.add(note);
+							break;
+						}
+					}
+			}
+			
+			prevResult = result;
+		}
+		
+		return result;
+	}
+	
+	
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -53,5 +104,10 @@ public class Folder {
 		}
 		
 		return name + ":" + nText + ":" + nImage;
+	}
+
+	@Override
+	public int compareTo(Folder o) {
+		return name.compareTo(o.name);
 	}
 }

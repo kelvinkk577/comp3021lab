@@ -7,4 +7,16 @@ public class TextNote extends Note {
 	{
 		super(title);
 	}
+	
+	public TextNote(String title, String content)
+	{
+		super(title);
+		this.content = content;
+	}
+	
+	public boolean containKeyword(String keyword)
+	{
+//		System.out.println("Invoking TextNote keyword search");
+		return (getTitle().toLowerCase().contains(keyword) || content.toLowerCase().contains(keyword));
+	}
 }
