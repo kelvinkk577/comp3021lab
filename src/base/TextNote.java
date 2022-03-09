@@ -16,7 +16,6 @@ public class TextNote extends Note {
 	
 	public boolean containKeyword(String keyword)
 	{
-//		System.out.println("Invoking TextNote keyword search");
 		return (getTitle().toLowerCase().contains(keyword) || content.toLowerCase().contains(keyword));
 	}
 }

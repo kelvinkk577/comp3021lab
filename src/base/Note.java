@@ -19,7 +19,6 @@ public class Note implements Comparable<Note> {
 	
 	public boolean containKeyword(String keyword)
 	{
-//		System.out.println("Invoking superclass keyword search");
 		return title.toLowerCase().contains(keyword);
 	}
 	

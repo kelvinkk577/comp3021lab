@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,46 +39,86 @@ public class Folder implements Comparable<Folder> {
 	public List<Note> searchNotes(String keywords)
 	{
 		keywords = keywords.toLowerCase();
-		keywords = keywords.replace(" or ", "||");
-		String list[] = keywords.split(" ");
 		
-		if (list.length == 0)
-			return new ArrayList<Note>();
+		// Split up the keywords and store in an ArrayList
+		ArrayList<String> list =  new ArrayList<String>(Arrays.asList(keywords.split(" ")));
 		
-		ArrayList<Note> result = new ArrayList<Note>();
-		ArrayList<Note> prevResult = notes;
+		ArrayList<String[]> orPairs = new ArrayList<String[]>();
 		
-		for (int i = 0; i < list.length; i++)
+		int orIndex = list.indexOf("or"); 
+		
+		// Repeat until no more OR keyword is found
+		while (orIndex != -1) 
 		{
-			result = new ArrayList<Note>();
+			if (orIndex == 0 || orIndex == list.size()-1)
+				System.err.println("Or operator should not be the first or final word in the keyword string");
 			
-			if (!list[i].contains("||"))
-			{
-				for (Note note : prevResult)
-					if (note.containKeyword(list[i]))
-						result.add(note);
-			}
-			else
-			{
-				String orList[] = list[i].split("\\|\\|");
-
-				for (Note note : prevResult)
-					for (int j = 0; j < orList.length; j++)
-					{
-						if (note.containKeyword(orList[j]))
-						{
-							result.add(note);
-							break;
-						}
-					}
-			}
+			String[] pair = new String[] {list.get(orIndex-1), list.get(orIndex+1)};
+			orPairs.add(pair); // Add the pair to the orPairs ArrayList
 			
-			prevResult = result;
+			// Remove the pair and the OR operator from the list
+			list.remove(orIndex-1);
+			list.remove(orIndex-1);
+			list.remove(orIndex-1);
+			
+			orIndex = list.indexOf("or");
 		}
 		
-		return result;
+		// Since all the OR pairs were removed, list now contains only keywords with the AND relationship
+		// Create an alias simply for readability
+		ArrayList<String> andList = list;
+		ArrayList<Note> result = new ArrayList<Note>();
+		
+		/* The search approach here is to find all the notes that satisfy the AND requirement first,
+		 * Then, base on those notes (which is stored in the result ArrayList), find the notes that satisfy the OR requirement
+		 */
+		if (!andList.isEmpty())
+		{
+			for (Note note : notes)
+			{
+				boolean andFlag = true;
+				for (String kw : andList)
+				{
+					if (!(note.containKeyword(kw)))
+					{
+						andFlag = false;
+						break;
+					}
+				}
+				
+				if (andFlag)
+					result.add(note);
+			}
+			
+			// No need to do the search for the OR requirement and can simply return the current result if there is no OR relationship at all
+			if (orPairs.isEmpty())
+				return result;
+		}
+		else // Change the search range to all the notes in the folder instead of the AND result when there is no AND relationship at all
+		{
+			result = notes;
+		}
+		
+		// Find the notes that satisfy the OR requirement
+		ArrayList<Note> newResult = new ArrayList<Note>();
+		for (String[] kwPair : orPairs)
+		{
+			newResult = new ArrayList<Note>();
+			
+			for (Note note : result) // The search range is based on the search result in the first part
+			{
+				if (note.containKeyword(kwPair[0]) || note.containKeyword(kwPair[1]))
+				{
+					newResult.add(note);
+				}
+			}
+			
+			result = newResult; // Update the search range for the next iteration because the search should base on the latest search result
+		}
+		
+		return newResult;
+			
 	}
-	
 	
 	@Override
 	public boolean equals(Object obj)

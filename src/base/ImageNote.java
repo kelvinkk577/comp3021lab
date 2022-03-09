@@ -9,4 +9,9 @@ public class ImageNote extends Note {
 	{
 		super(title);
 	}
+	
+	public boolean containKeyword(String keyword)
+	{
+		return getTitle().toLowerCase().contains(keyword);
+	}
 }
