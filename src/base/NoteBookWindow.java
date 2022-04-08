@@ -189,7 +189,7 @@ public class NoteBookWindow extends Application {
 						if (note.getTitle().compareTo(title) == 0)
 						{
 							TextNote tnote = (TextNote) note;
-							content = new String(tnote.content);
+							content = tnote.content;
 						}
 						
 					}
