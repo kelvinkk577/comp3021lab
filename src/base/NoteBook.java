@@ -59,6 +59,16 @@ public class NoteBook implements Serializable{
 		return folders;
 	}
 	
+	// helper
+	public Folder getFolder(String name)
+	{
+		for (Folder folder : folders)
+			if (folder.getName().compareTo(name) == 0)
+				return folder;
+		
+		return null;
+	}
+	
 	public boolean insertNote(String folderName, Note note)
 	{
 		Folder folder = null;
