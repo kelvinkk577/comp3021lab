@@ -242,8 +242,8 @@ public class NoteBookWindow extends Application {
 				for (Folder fd : noteBook.getFolders())
 					folders.add(fd.getName());
 				
-				foldersComboBox.setValue("-----");
 				foldersComboBox.getItems().setAll(folders);
+				foldersComboBox.getSelectionModel().selectLast();
 				updateListView();
 		    }
 		});
