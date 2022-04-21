@@ -34,6 +34,25 @@ public class Folder implements Comparable<Folder>, Serializable {
 		return notes;
 	}
 
+	public Note getNote(String title)
+	{
+		for (Note note : notes)
+			if (note.getTitle().compareTo(title) == 0)
+				return note;
+		
+		return null;
+	}
+	
+	public boolean removeNotes(String title)
+	{
+		Note note = getNote(title);
+		if (note == null)
+			return false;
+		
+		notes.remove(note);
+		return true;
+	}
+	
 	public void sortNotes()
 	{
 		Collections.sort(notes);
