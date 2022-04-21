@@ -158,7 +158,7 @@ public class NoteBookWindow extends Application {
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Serialized Object File (*.ser)", "*.ser");
 			fileChooser.getExtensionFilters().add(extFilter);
 			
-			File file = fileChooser.showOpenDialog(stage);
+			File file = fileChooser.showSaveDialog(stage);
 			
 			if (file != null)
 			{
